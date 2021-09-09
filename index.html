@@ -77,5 +77,88 @@
                 </div>
             </div>
         </div>
+        <script>
+            add = document.getElementById("add");
+            add.addEventListener("click", getAndUpdate);
+            update();
+            function getAndUpdate() {
+                let time = new Date();
+                let hour = time.getHours();
+                let min = time.getMinutes();
+                let sec = time.getSeconds();
+                let date = time.getDate();
+                let month = (time.getMonth() + 1);
+                let year = time.getFullYear();
+                am_pm = "AM";
+                if (hour > 12) {
+                    hour -= 12;
+                    am_pm = "PM";
+                }
+                if (hour == 0) {
+                    hr = 12;
+                    am_pm = "AM";
+                }
+                hour = hour < 10 ? "0" + hour : hour;
+                min = min < 10 ? "0" + min : min;
+                sec = sec < 10 ? "0" + sec : sec;
+                let currentTime = hour + ":" + min + ":" + sec + am_pm;
+                let currentDate = date + "/" + month + "/" + year;
+                status = "Pass"
+                id = 1;
+                if (localStorage.getItem('itemJson') == null) {
+                    itemJsonArray = [];
+                    itemJsonArray.push([currentDate, currentTime, status, id]);
+                    localStorage.setItem('itemJson', JSON.stringify(itemJsonArray));
+                }
+                else {
+                    itemJsonArrayStr = localStorage.getItem('itemsJson')
+                    itemJsonArray = JSON.parse(itemJsonArrayStr);
+                    itemJsonArray.push([currentDate, currentTime, status, id]);
+                    localStorage.setItem('itemsJson', JSON.stringify(itemJsonArray))
+                }
+                update();
+            }
+            function update() {
+                if (localStorage.getItem('itemsJson') == null) {
+                    itemJsonArray = [];
+                    localStorage.setItem('itemsJson', JSON.stringify(itemJsonArray))
+                }
+                else {
+                    itemJsonArrayStr = localStorage.getItem('itemsJson')
+                    itemJsonArray = JSON.parse(itemJsonArrayStr);
+                }
+                // Populate the table
+                let tableBody = document.getElementById("sensorLogTable");
+                let str = "";
+                itemJsonArray.forEach((element, index) => {
+                    str += `
+                        <tr>
+                        <th scope="row">${index + 1}</th>
+                        <td>${element[0]}</td>
+                        <td>${element[1]}</td>
+                        <td>${element[2]}</td>
+                        <td>${element[3]}</td>
+                        <td><button class='btn btn-sm btn-primary' onclick='deleted(${index})'>Delete</button></td> 
+                        </tr>`;
+                });
+                tableBody.innerHTML = str;
+            }
+            function deleted(itemIndex) {
+                console.log("Delete", itemIndex);
+                itemJsonArrayStr = localStorage.getItem('itemsJson')
+                itemJsonArray = JSON.parse(itemJsonArrayStr);
+                // Delete itemIndex element from the array
+                itemJsonArray.splice(itemIndex, 1);
+                localStorage.setItem('itemsJson', JSON.stringify(itemJsonArray));
+                update();
+            }
+            function clearStorage() {
+                if (confirm("Do you areally want to clear?")) {
+                    console.log('Clearing the storage')
+                    localStorage.clear();
+                    update();
+                }
+            }
+        </script>
 </body>
 </html>
