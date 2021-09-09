@@ -56,6 +56,8 @@
                     </label>
                     <div class="bd-example m-3">
                         <label class='fs-3 p-2'>Fingerprint Sensor log</label>
+                        <button id='add' class='btn btn-dark'>Add</button>
+                        <button id='clear' class='btn btn-danger' onclick='clearStorage()'>Delete all records</button>
                         <br>
                         <table class="table table-hover">
                             <thead>
@@ -66,9 +68,9 @@
                                   <th scope="col">Status</th>
                                   <th scope="col">#ID</th>
                                 </tr>
-                              </thead = "sensorLogTable">
-                              <tbody>
-                                  
+                              </thead>
+                              <tbody class="sensorLogTable">
+
                               </tbody>
                         </table>
                     </div>
