@@ -1,3 +1,4 @@
+const char webpage[] PROGMEM = R"=====(
 <html charset=UTF-8>
     <head>
         <meta http-equiv='refresh' content='60' name='viewport' content='width=device-width, initial-scale=1'/>
@@ -305,3 +306,5 @@
         </script>
     </body>
 </html>
+
+)====="; 
