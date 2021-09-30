@@ -18,6 +18,7 @@ const long utcOffSetInSeconds = 19802;
 const char* ssid = "Chauhan";
 const char* password = "9619886170";
 const uint8_t gpio[4] = {D5,D6,D7,D8};
+const char* host = "www.google.com";
 char buff[24];
 String data[4];
 int pos;
@@ -33,6 +34,7 @@ WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP, "asia.pool.ntp.org",utcOffSetInSeconds);
 
 void setup() {
+  WiFiClient client;
   Serial.begin(115200);
   for(int x=0;x<4;x++) {
     pinMode(gpio[x], OUTPUT);
@@ -62,6 +64,22 @@ void setup() {
   server.begin();
   SPIFFS.begin();
   timeClient.begin();
+  if (client.connect(host,80)) {
+    Serial.println("Starting Time calibration.");
+    timeClient.update();
+    int x = timeClient.getMinutes();
+    int y=x;
+    while (x == y) {
+      timeClient.update();
+      y = timeClient.getMinutes();
+      delay(1000);
+      Serial.print(".");
+    }
+    Serial.println("Clock calibrated Successfully");
+  }
+  else {
+    Serial.println("ESP8266 is offline cannot calibrate clock");
+  }
 }
 
 void loop() {
