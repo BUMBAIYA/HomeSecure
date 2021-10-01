@@ -10,7 +10,7 @@
 const unsigned long eventInterval = 1000;
 unsigned long previousTime = 0;
 
-const unsigned long eventInterval2 = 30000;
+const unsigned long eventInterval2 = 1000;
 unsigned long previousTime2 = 0;
 
 const long utcOffSetInSeconds = 19802;
@@ -67,11 +67,10 @@ void setup() {
   if (client.connect(host,80)) {
     Serial.println("Starting Time calibration.");
     timeClient.update();
-    int x = timeClient.getMinutes();
-    int y=x;
-    while (x == y) {
+    int x = timeClient.getSeconds();
+    while (x != 0) {
       timeClient.update();
-      y = timeClient.getMinutes();
+      y = timeClient.getSeconds();
       delay(1000);
       Serial.print(".");
     }
@@ -90,7 +89,11 @@ void loop() {
   }
   unsigned long currentTime2 = millis();
   if (currentTime2 - previousTime2 >= eventInterval2) {
-    checkScheduleRun();
+    timeClient.update();
+    int x = timeClient.getSeconds();
+    if (x == 0) {
+      checkScheduleRun();
+    }
     previousTime2 = currentTime2;
   }
   server.handleClient();
